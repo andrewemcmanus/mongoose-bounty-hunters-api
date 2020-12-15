@@ -3,9 +3,15 @@ const app = express();
 require('dotenv').config()
 const models = require('./models');
 
+// express body parser as middleware!
+app.use(express.urlencoded())
+// parse the body data as JSON
+app.use(express.json())
+
 app.get('/', (req, res) => {
   res.send('hello from root')
 })
+
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
