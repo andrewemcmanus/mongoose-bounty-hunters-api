@@ -32,7 +32,7 @@ router.put('/:id', (req, res) => {
 
   models.Bounty.update({
     _id: req.params.id
-  }, {$set: {
+  }, { $set: {
     wantedFor,
     client,
     reward,
