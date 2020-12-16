@@ -1,38 +1,55 @@
-const router = require('express').Router();
+const router = require('express').Router()
 
-const models = require('../models');
+const models = require('../models')
 
 router.get('/', (req, res) => {
-  // res.send('hello from GET /bounties')
   models.Bounty.find().then((foundBounties) => {
     res.status(200).json({ bounties: foundBounties })
-    // mongoose should be sent as json
-  }
-)})
+  })
+  .catch((error) => res.send({ error }))})
 
 router.get('/:id', (req, res) => {
-  // res.send('hello from GET bounties/:id')
-  // remember that _id and its unique string are how Mongo accesses the record!
-  momdels.Bounty.findOne({_id: req.params.id}).then((bounty) => {
+  models.Bounty.findOne({_id: req.params.id}).then((bounty) => {
     res.status(200).json({ bounty })
   })
-})
+  .catch((error) => res.send({ error }))})
 
 router.post('/', (req, res) => {
-  // res.send('hello from POST /bounties')
-  // CREATE A NEW BOUNTY
-  // we need middleware to receive req.body
   models.Bounty.create(req.body).then((bounty) => {
     res.status(201).json({ bounty })
-  }).catch((err) => { res.send(err) })
-})
+  })
+  .catch((error) => res.send({ error }))})
 
 router.put('/:id', (req, res) => {
-  res.send('hello from PUT /bounties')
+  // const wantedFor = req.body.wantedFor
+  // const client = req.body.client
+  // const reward = req.body.reward
+  // const hunters = req.body.hunters
+  // const captured = req.body.captured
+  // const lastSeen = req.body.lastSeen
+
+  const { wantedFor, client, reward, hunters, captured, lastSeen } = req.body
+
+  models.Bounty.update({
+    _id: req.params.id
+  }, {$set: {
+    wantedFor,
+    client,
+    reward,
+    hunters,
+    captured,
+    lastSeen
+  }})
+  .then((bounty) => {
+    res.status(201).json({ bounty })
+  })
+  .catch((error) => res.send({ error }))
 })
 
 router.delete('/:id', (req, res) => {
-  res.send('hello from DELETE /bounties/:id')
+  models.Bounty.deleteOne({ _id: req.params.id })
+  .then((bounty) => res.status(201).json({ bounty }))
+  .catch((error) => res.send({ error }))
 })
 
-module.exports = router;
+module.exports = router
